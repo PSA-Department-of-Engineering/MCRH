@@ -1,0 +1,68 @@
+name: Create Jira issue on branch create
+on:
+  create:
+
+jobs:
+  create-jira-issue:
+    if: github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare variables
+        shell: bash
+        run: |
+          BRANCH_REF="${{ github.event.ref }}"            # e.g. feature/MCRH-add-docs
+          BRANCH_NAME="${BRANCH_REF#refs/heads/}"         # fallback extraction
+          REPO="${{ github.repository }}"                 # e.g. PSA-Department-of-Engineering/MCRH
+          echo "BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "REPO=$REPO" >> $GITHUB_ENV
+
+      - name: Decide project key from repo
+        shell: bash
+        run: |
+          case "${REPO}" in
+            "PSA-Department-of-Engineering/Alexandria") PROJ="AL" ;;
+            "PSA-Department-of-Engineering/SolveOS")      PROJ="SOL" ;;
+            "PSA-Department-of-Engineering/TarkovPlus")   PROJ="TKP" ;;
+            "PSA-Department-of-Engineering/MCRH")         PROJ="MCRH" ;;
+            *) PROJ="" ;;
+          esac
+          if [[ -z "$PROJ" ]]; then
+            echo "No project mapping for repo $REPO - exiting"
+            exit 0
+          fi
+          echo "PROJ=$PROJ" >> $GITHUB_ENV
+
+      - name: Skip if branch already references an issue key
+        shell: bash
+        run: |
+          # detect AL-123 style keys in branch name
+          if [[ "$BRANCH" =~ ([A-Z][A-Z0-9]+-[0-9]+) ]]; then
+            echo "Branch already contains issue key ${BASH_REMATCH[1]} - not creating a new issue."
+            exit 0
+          fi
+
+      - name: Build issue summary & description
+        shell: bash
+        run: |
+          # Convert branch name to a readable summary: feature/mcrh-add-docs -> "mcrh add docs"
+          SUMMARY=$(echo "$BRANCH" | sed -E 's#^([^/]+/)?##' | sed -E 's/[-_]/ /g' | sed -E 's/^\s+|\s+$//g')
+          SUMMARY="$(tr '[:lower:]' '[:upper:]' <<< ${SUMMARY:0:1})${SUMMARY:1}"
+          DESC="Automatically created from branch ${BRANCH} in ${REPO}"
+          echo "SUMMARY=$SUMMARY" >> $GITHUB_ENV
+          echo "DESC=$DESC" >> $GITHUB_ENV
+
+      - name: Create Jira issue
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER:     ${{ secrets.JIRA_USER }}
+          JIRA_TOKEN:    ${{ secrets.JIRA_TOKEN }}
+          PROJ: ${{ env.PROJ }}
+          ISSUE_SUMMARY: ${{ env.SUMMARY }}
+          ISSUE_DESC: ${{ env.DESC }}
+        shell: bash
+        run: |
+          PAYLOAD=$(jq -n --arg k "$PROJ" --arg s "$ISSUE_SUMMARY" --arg d "$ISSUE_DESC" \
+            '{fields: {project: {key: $k}, summary: $s, description: $d, issuetype: {name: "Task"}}}')
+          echo "Creating issue in $PROJ: $ISSUE_SUMMARY"
+          curl -s -u "$JIRA_USER:$JIRA_TOKEN" -X POST -H "Content-Type: application/json" \
+            "$JIRA_BASE_URL/rest/api/3/issue" -d "$PAYLOAD" | jq .

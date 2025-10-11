@@ -1,0 +1,35 @@
+name: Create Jira issue from commit
+on:
+  push:
+    branches: [ main, '*' ]
+
+jobs:
+  create-jira:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump push payload
+        run: |
+          echo "${{ toJson(github.event) }}" > /tmp/payload.json
+          jq -c '.commits[] | {id:.id, message:.message, url:.url}' /tmp/payload.json > /tmp/commits.json
+
+      - name: Create Jira issues for matching commits
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER:     ${{ secrets.JIRA_USER }}
+          JIRA_TOKEN:    ${{ secrets.JIRA_TOKEN }}
+          DEFAULT_ISSUETYPE: "Task"
+        run: |
+          while read -r line; do
+            MSG=$(echo "$line" | jq -r '.message')
+            # match: JIRA-CREATE:KEY|Summary|Description
+            if [[ "$MSG" =~ ^JIRA-CREATE:([A-Z0-9]+)\|([^|]+)(\|(.+))? ]]; then
+              KEY="${BASH_REMATCH[1]}"
+              SUMMARY="${BASH_REMATCH[2]}"
+              DESC="${BASH_REMATCH[4]:-Created from commit}"
+              PAYLOAD=$(jq -n --arg k "$KEY" --arg s "$SUMMARY" --arg d "$DESC" --arg it "$DEFAULT_ISSUETYPE" \
+                '{fields: {project: {key: $k}, summary: $s, description: $d, issuetype: {name: $it}}}')
+              echo "Creating Jira issue in $KEY: $SUMMARY"
+              curl -s -u "$JIRA_USER:$JIRA_TOKEN" -X POST -H "Content-Type: application/json" \
+                "$JIRA_BASE_URL/rest/api/3/issue" -d "$PAYLOAD" | jq .
+            fi
+          done < <(jq -c '.[]' /tmp/commits.json)
