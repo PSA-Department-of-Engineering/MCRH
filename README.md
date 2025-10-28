@@ -105,4 +105,102 @@ end note
 - Development: a docker-compose with services (frontend dev server, backend, postgres, local file volume) will make onboarding simple.
 - Production: containerize backend and frontends; run behind nginx (TLS), use managed Postgres or a hardened PostgreSQL instance, and mount a dedicated persistent volume for file storage. Add regular backups and monitoring for the DB and filesystem.
 
+---
+
+## 6. Code Architecture & Standards
+
+This project follows strict architectural and coding principles to ensure maintainability, scalability, and clarity.
+
+### Core Architectural Principles
+
+- **Hexagonal Architecture (Ports & Adapters)**: Clear separation between domain logic, application orchestration, and infrastructure
+  - Structure: `Driver Adapters → Inbound Ports → Use Cases → Outbound Ports → Driven Adapters`
+- **SOLID Principles**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
+- **Clean Boundaries**: Domain logic never depends on infrastructure; infrastructure depends on domain abstractions
+- **Separation of Concerns**: One responsibility per file, one file per concept
+- **Cloud-Native**: Stateless, environment-variable driven, no in-memory cross-request dependencies
+- **Self-Documenting**: Code structure and naming should be clear enough that the project tree itself explains the system
+
+### Backend Structure
+
+```
+example-service/
+├── app/
+│   ├── modules/                    # Business domains (bounded contexts)
+│   │   └── example-module/
+│   │       ├── di.py               # Dependency injection
+│   │       ├── domain/             # Pure business logic (no framework dependencies)
+│   │       │   ├── entities/       # Domain entities
+│   │       │   └── exceptions/     # Domain-specific exceptions
+│   │       ├── application/        # Use cases & ports
+│   │       │   ├── ports/
+│   │       │   │   ├── inbound/    # Use case interfaces (primary ports)
+│   │       │   │   └── outbound/   # Repository/service interfaces (secondary ports)
+│   │       │   └── use_cases/      # Business logic orchestration
+│   │       └── adapters/           # External implementations
+│   │           ├── inbound/        # Driving adapters (HTTP/API)
+│   │           │   └── http/
+│   │           │       ├── routes/
+│   │           │       ├── dtos/   # Request/Response models
+│   │           │       ├── mappers/# DTO ↔ Domain transformations
+│   │           │       └── exceptions/
+│   │           └── outbound/       # Driven adapters (infrastructure)
+│   │               ├── database/
+│   │               └── external/
+│   ├── infrastructure/             # Shared infrastructure (security, logging, events)
+│   ├── api/                        # API composition layer
+│   └── main.py                     # Application entry point
+```
+
+### Frontend Structure
+
+```
+src/
+├── api/                    # API Layer - Anti-corruption layer for backend
+│   ├── clients/            # Domain-specific API clients
+│   ├── models/             # API DTO type definitions
+│   └── mappers/            # DTO → Domain model transformations
+├── core/                   # Business Logic Layer
+│   └── domain/             # Specific domain (e.g., resourcePacks)
+│       ├── models/         # Domain entities (pure TypeScript)
+│       ├── hooks/          # React hooks for domain operations
+│       └── services/       # Business logic services
+├── components/             # Shared UI Components (pure presentational)
+├── pages/                  # Page Components (one per route)
+├── layouts/                # Layout structures
+├── routes/                 # Routing configuration
+├── utils/                  # Shared utility functions (pure, no side effects)
+├── context/                # Global state management
+├── theme/                  # UI theme configuration
+└── main.tsx                # Application entry point
+```
+
+### Key Rules
+
+1. **One Responsibility Per File**: Each file contains exactly one class, interface, component, or function
+2. **No Adapter Dependencies**: Adapters never depend on each other; use cases never depend on adapters
+3. **Type Safety**: All code must be strictly typed (TypeScript/Python type hints)
+4. **DTOs, Entities, Mappers**: Separate concerns - never mix data transfer with domain logic
+5. **UI vs Logic Separation**: UI components are pure presentational; business logic lives in `core/` or `services/`
+6. **Self-Documenting Code**: Descriptive names, comprehensive JSDoc/docstrings, clear project tree structure
+7. **No Value Objects** (unless absolutely necessary): Prefer simple types and interfaces
+8. **Indentation**: 4 spaces consistently
+9. **Error Handling**: Dedicated `/errors` or `/exceptions` directories with structured error types
+
+### Documentation Standards
+
+- Every exported function, class, component must have JSDoc/docstring with:
+  - Brief description of purpose
+  - `@param` for each parameter with type and description
+  - `@returns` with return type and description
+  - Example usage where complexity warrants it
+
+### Architecture Verification
+
+The project structure should be self-explanatory to anyone familiar with Hexagonal Architecture:
+- Directory hierarchy serves as living documentation
+- No hidden coupling between layers
+- Clear data flow: External → Adapters → Application → Domain → Application → Adapters → External
+- New contributors should understand the system by analyzing the project tree alone
+
 

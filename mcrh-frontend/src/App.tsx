@@ -1,3 +1,7 @@
+/**
+ * Root Application Component
+ * Provides theme and routing context to the entire application
+ */
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { RouterProvider } from 'react-router-dom';
