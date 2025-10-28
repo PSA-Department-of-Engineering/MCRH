@@ -100,8 +100,6 @@ end note
 	- Backend writes and reads files from mounted path; generate signed download endpoints or serve behind nginx.
 	- In production consider switching to S3-compatible object storage for scalability.
 
-- Search & Indexing (optional): Elasticsearch or PostgreSQL FTS depending on scale.
-
 ## Deployment / Dev notes
 
 - Development: a docker-compose with services (frontend dev server, backend, postgres, local file volume) will make onboarding simple.
