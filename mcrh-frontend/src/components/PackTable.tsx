@@ -33,27 +33,34 @@ import {
     useTheme,
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
+import { InfiniteScrollTrigger } from './InfiniteScrollTrigger';
 import type { ResourcePack, SortOption } from '../core/resourcePacks/models/ResourcePack';
 import { formatFileSize, formatNumber } from '../utils/format';
 
 interface PackTableProps {
     packs: ResourcePack[];
     loading?: boolean;
+    loadingMore?: boolean;
+    hasMore?: boolean;
     sortBy: SortOption;
     sortDirection: 'asc' | 'desc';
     onSortChange: (field: SortOption) => void;
     onPackClick?: (pack: ResourcePack) => void;
     onDownload: (pack: ResourcePack) => void;
+    onLoadMore?: () => void;
 }
 
 export const PackTable = ({
     packs,
     loading = false,
+    loadingMore = false,
+    hasMore = false,
     sortBy,
     sortDirection,
     onSortChange,
     onPackClick,
     onDownload,
+    onLoadMore,
 }: PackTableProps) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -94,72 +101,84 @@ export const PackTable = ({
     // Mobile card layout
     if (isMobile) {
         return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {packs.map((pack) => (
-                    <Card
-                        key={pack.id}
-                        sx={{
-                            cursor: onPackClick ? 'pointer' : 'default',
-                            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-                            '&:hover': onPackClick
-                                ? {
-                                      transform: 'translateY(-2px)',
-                                      boxShadow: 4,
-                                  }
-                                : {},
-                        }}
-                        onClick={() => onPackClick?.(pack)}
-                    >
-                        <CardContent>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                                <Box sx={{ flex: 1 }}>
-                                    <Typography variant="h6" component="h3" gutterBottom>
-                                        {pack.name}
+            <Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {packs.map((pack) => (
+                        <Card
+                            key={pack.id}
+                            sx={{
+                                cursor: onPackClick ? 'pointer' : 'default',
+                                transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                                '&:hover': onPackClick
+                                    ? {
+                                          transform: 'translateY(-2px)',
+                                          boxShadow: 4,
+                                      }
+                                    : {},
+                            }}
+                            onClick={() => onPackClick?.(pack)}
+                        >
+                            <CardContent>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography variant="h6" component="h3" gutterBottom>
+                                            {pack.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                                            by {pack.author}
+                                        </Typography>
+                                    </Box>
+                                    <IconButton
+                                        color="primary"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onDownload(pack);
+                                        }}
+                                        aria-label={`Download ${pack.name}`}
+                                    >
+                                        <DownloadIcon />
+                                    </IconButton>
+                                </Box>
+
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1 }}>
+                                    {pack.minecraftVersions.slice(0, 2).map((version) => (
+                                        <Chip key={version.id} label={version.version} size="small" />
+                                    ))}
+                                    {pack.minecraftVersions.length > 2 && (
+                                        <Chip label={`+${pack.minecraftVersions.length - 2}`} size="small" variant="outlined" />
+                                    )}
+                                </Box>
+
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                                    <Typography variant="caption" color="text.secondary">
+                                        {formatFileSize(pack.fileSize)}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                                        by {pack.author}
+                                    <Typography variant="caption" color="text.secondary">
+                                        {formatNumber(pack.downloadCount)} downloads
                                     </Typography>
                                 </Box>
-                                <IconButton
-                                    color="primary"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onDownload(pack);
-                                    }}
-                                    aria-label={`Download ${pack.name}`}
-                                >
-                                    <DownloadIcon />
-                                </IconButton>
-                            </Box>
-
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1 }}>
-                                {pack.minecraftVersions.slice(0, 2).map((version) => (
-                                    <Chip key={version.id} label={version.version} size="small" />
-                                ))}
-                                {pack.minecraftVersions.length > 2 && (
-                                    <Chip label={`+${pack.minecraftVersions.length - 2}`} size="small" variant="outlined" />
-                                )}
-                            </Box>
-
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                                <Typography variant="caption" color="text.secondary">
-                                    {formatFileSize(pack.fileSize)}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    {formatNumber(pack.downloadCount)} downloads
-                                </Typography>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    ))}
+                </Box>
+                
+                {/* Infinite scroll trigger */}
+                {onLoadMore && (
+                    <InfiniteScrollTrigger
+                        onIntersect={onLoadMore}
+                        isLoading={loadingMore}
+                        hasMore={hasMore}
+                    />
+                )}
             </Box>
         );
     }
 
     // Desktop table layout
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="resource packs table">
+        <Box>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="resource packs table">
                 <TableHead>
                     <TableRow>
                         <TableCell>
@@ -245,5 +264,15 @@ export const PackTable = ({
                 </TableBody>
             </Table>
         </TableContainer>
+        
+        {/* Infinite scroll trigger */}
+        {onLoadMore && (
+            <InfiniteScrollTrigger
+                onIntersect={onLoadMore}
+                isLoading={loadingMore}
+                hasMore={hasMore}
+            />
+        )}
+        </Box>
     );
 };

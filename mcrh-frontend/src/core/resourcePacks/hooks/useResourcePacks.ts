@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { ResourcePack, ResourcePackFilters, ResourcePackSort, MinecraftVersion } from '../models/ResourcePack';
 import { fetchResourcePacks, fetchMinecraftVersions } from '../../../api/resourcePacks/resourcePacksApi';
 import { mapResourcePacksFromDTO, mapMinecraftVersionsFromDTO } from '../../../api/resourcePacks/mappers';
 import { ResourcePackService } from '../services/ResourcePackService';
 
 /**
- * Custom hook for resource pack operations
+ * Custom hook for resource pack operations with pagination and infinite scroll
  * Encapsulates business logic and state management
  * Connects UI to API layer, uses mappers to convert DTOs to domain models
  * 
@@ -13,7 +13,7 @@ import { ResourcePackService } from '../services/ResourcePackService';
  * 
  * @param initialFilters - Initial filter configuration
  * @param initialSort - Initial sort configuration
- * @returns Resource packs state and operations
+ * @returns Resource packs state and operations with pagination support
  */
 
 export const useResourcePacks = (
@@ -24,20 +24,25 @@ export const useResourcePacks = (
     const [filters, setFilters] = useState<ResourcePackFilters>(initialFilters || {});
     const [sort, setSort] = useState<ResourcePackSort>(initialSort || { sortBy: 'name', direction: 'asc' });
     const [loading, setLoading] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const pageSize = 12; // Fixed page size
 
-    // Fetch packs when filters or sort change
+    // Fetch initial page when filters or sort change
     useEffect(() => {
-        const fetchPacks = async () => {
+        const fetchInitialPage = async () => {
             setLoading(true);
             setError(null);
+            setPage(1); // Reset to first page
             
             try {
-                // Fetch DTOs from API
-                const dtos = await fetchResourcePacks(filters, sort);
+                // Fetch paginated DTOs from API
+                const response = await fetchResourcePacks(filters, sort, 1, pageSize);
                 
                 // Convert DTOs to domain models
-                const domainPacks = mapResourcePacksFromDTO(dtos);
+                const domainPacks = mapResourcePacksFromDTO(response.packs);
                 
                 // Apply client-side filtering and sorting
                 // (API will handle this in production, but mock API returns all data)
@@ -45,19 +50,55 @@ export const useResourcePacks = (
                 const sorted = ResourcePackService.applySorting(filtered, sort);
                 
                 setPacks(sorted);
+                setHasMore(response.hasMore);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to fetch resource packs');
                 setPacks([]);
+                setHasMore(false);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchPacks();
+        fetchInitialPage();
     }, [filters, sort]);
 
     /**
+     * Load next page of resource packs
+     * Appends new packs to existing list
+     */
+    const loadMore = useCallback(async () => {
+        if (loadingMore || !hasMore) return;
+
+        setLoadingMore(true);
+        setError(null);
+        const nextPage = page + 1;
+        
+        try {
+            // Fetch next page
+            const response = await fetchResourcePacks(filters, sort, nextPage, pageSize);
+            
+            // Convert DTOs to domain models
+            const domainPacks = mapResourcePacksFromDTO(response.packs);
+            
+            // Apply client-side filtering and sorting
+            const filtered = ResourcePackService.applyFilters(domainPacks, filters);
+            const sorted = ResourcePackService.applySorting(filtered, sort);
+            
+            // Append new packs to existing list
+            setPacks(prev => [...prev, ...sorted]);
+            setPage(nextPage);
+            setHasMore(response.hasMore);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to load more resource packs');
+        } finally {
+            setLoadingMore(false);
+        }
+    }, [loadingMore, hasMore, page, filters, sort, pageSize]);
+
+    /**
      * Update filters (merges with existing filters)
+     * Resets pagination to first page
      * @param newFilters - Partial filter updates
      */
     const updateFilters = (newFilters: Partial<ResourcePackFilters>) => {
@@ -66,6 +107,7 @@ export const useResourcePacks = (
 
     /**
      * Update sort configuration
+     * Resets pagination to first page
      * @param newSort - New sort configuration
      */
     const updateSort = (newSort: ResourcePackSort) => {
@@ -74,6 +116,7 @@ export const useResourcePacks = (
 
     /**
      * Clear all filters
+     * Resets pagination to first page
      */
     const clearFilters = () => {
         setFilters({});
@@ -84,10 +127,14 @@ export const useResourcePacks = (
         filters,
         sort,
         loading,
+        loadingMore,
         error,
+        hasMore,
+        page,
         updateFilters,
         updateSort,
         clearFilters,
+        loadMore,
     };
 };
 

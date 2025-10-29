@@ -8,7 +8,7 @@
 
 import { mockGet } from '../apiClient';
 import { RESOURCE_PACKS_ENDPOINTS, MINECRAFT_VERSIONS_ENDPOINTS } from '../endpoints';
-import type { ResourcePackDTO, MinecraftVersionDTO } from './dtos';
+import type { ResourcePackDTO, MinecraftVersionDTO, ResourcePackListResponseDTO } from './dtos';
 import { mockResourcePacks, mockMinecraftVersions } from '../../core/resourcePacks/services/mockData';
 import type { ResourcePackFilters, ResourcePackSort } from '../../core/resourcePacks/models/ResourcePack';
 
@@ -73,25 +73,42 @@ const convertMockVersionsToDTOs = (): MinecraftVersionDTO[] => {
 };
 
 /**
- * Fetch resource packs from API
+ * Fetch resource packs from API with pagination
  * Supports filtering and sorting via query parameters
  * 
  * @param filters - Optional filter criteria
  * @param sort - Optional sort configuration
- * @returns Promise resolving to array of Resource Pack DTOs
+ * @param page - Page number (1-indexed, default: 1)
+ * @param pageSize - Number of items per page (default: 12)
+ * @returns Promise resolving to paginated response with Resource Pack DTOs
  */
 export const fetchResourcePacks = async (
     filters?: ResourcePackFilters,
-    sort?: ResourcePackSort
-): Promise<ResourcePackDTO[]> => {
+    sort?: ResourcePackSort,
+    page: number = 1,
+    pageSize: number = 12
+): Promise<ResourcePackListResponseDTO> => {
     const queryParams = buildQueryParams(filters, sort);
-    const url = `${RESOURCE_PACKS_ENDPOINTS.list}${queryParams}`;
+    const url = `${RESOURCE_PACKS_ENDPOINTS.list}${queryParams}&page=${page}&pageSize=${pageSize}`;
     
-    // Mock implementation - simulates API call with delay
+    // Mock implementation - simulates API call with delay and pagination
     const mockDTOs = convertMockDataToDTOs();
-    const response = await mockGet(url, mockDTOs);
     
-    return response;
+    // Calculate pagination
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedPacks = mockDTOs.slice(startIndex, endIndex);
+    const hasMore = endIndex < mockDTOs.length;
+    
+    const response: ResourcePackListResponseDTO = {
+        packs: paginatedPacks,
+        total: mockDTOs.length,
+        page,
+        pageSize,
+        hasMore,
+    };
+    
+    return await mockGet(url, response);
     
     /**
      * Future: Real API implementation
@@ -99,7 +116,7 @@ export const fetchResourcePacks = async (
      * import apiClient from '../apiClient';
      * 
      * const response = await apiClient.get<ResourcePackListResponseDTO>(url);
-     * return response.data.packs;
+     * return response.data;
      */
 };
 

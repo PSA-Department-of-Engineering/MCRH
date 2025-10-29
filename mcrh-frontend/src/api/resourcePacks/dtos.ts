@@ -59,13 +59,14 @@ export interface ResourcePackDTO {
 
 /**
  * Resource Pack List Response DTO
- * API response for fetching multiple resource packs
+ * API response for fetching multiple resource packs with pagination
  */
 export interface ResourcePackListResponseDTO {
     packs: ResourcePackDTO[];
     total: number;
-    page?: number;
-    pageSize?: number;
+    page: number;
+    pageSize: number;
+    hasMore: boolean;
 }
 
 /**

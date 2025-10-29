@@ -22,7 +22,7 @@ import type { SortOption } from '../core/resourcePacks/models/ResourcePack';
 
 export const HomePage = () => {
     const { versions: minecraftVersions } = useMinecraftVersions();
-    const { packs, filters, sort, loading, updateFilters, updateSort } = useResourcePacks();
+    const { packs, filters, sort, loading, loadingMore, hasMore, updateFilters, updateSort, loadMore } = useResourcePacks();
     const [view, setView] = useState<ViewMode>('grid');
 
     const handleSearchChange = (query: string) => {
@@ -93,12 +93,18 @@ export const HomePage = () => {
                         <PackGrid
                             packs={packs}
                             loading={loading}
+                            loadingMore={loadingMore}
+                            hasMore={hasMore}
+                            onLoadMore={loadMore}
                             onPackClick={handlePackClick}
                         />
                     ) : (
                         <PackTable
                             packs={packs}
                             loading={loading}
+                            loadingMore={loadingMore}
+                            hasMore={hasMore}
+                            onLoadMore={loadMore}
                             sortBy={sort.sortBy}
                             sortDirection={sort.direction}
                             onSortChange={handleSortChange}
