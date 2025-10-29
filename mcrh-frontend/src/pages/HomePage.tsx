@@ -52,7 +52,10 @@ export const HomePage = () => {
     };
 
     return (
-        <Box>
+        <Box sx={{ 
+            maxWidth: { xs: '100%', xl: 2400 },  // Max width for very large screens
+            mx: 'auto'  // Center the content
+        }}>
             {/* Page header with view toggle */}
             <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
                 <Box>

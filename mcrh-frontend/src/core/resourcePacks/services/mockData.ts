@@ -11,6 +11,11 @@ export const mockMinecraftVersions: MinecraftVersion[] = [
     { id: '3', version: '1.19.2', releaseDate: new Date('2022-08-05') },
     { id: '4', version: '1.18.2', releaseDate: new Date('2022-02-28') },
     { id: '5', version: '1.16.5', releaseDate: new Date('2021-01-15') },
+    { id: '6', version: '1.20.4', releaseDate: new Date('2023-12-07') },
+    { id: '7', version: '1.20.2', releaseDate: new Date('2023-09-21') },
+    { id: '8', version: '1.19.3', releaseDate: new Date('2022-12-07') },
+    { id: '9', version: '1.18.1', releaseDate: new Date('2021-12-10') },
+    { id: '10', version: '1.17.1', releaseDate: new Date('2021-07-06') },
 ];
 
 export const mockResourcePacks: ResourcePack[] = [
@@ -20,7 +25,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'A double resolution texture pack that stays faithful to the original Minecraft textures',
         author: 'Faithful Team',
         tags: ['vanilla', 'faithful', 'HD'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/2e7d32/ffffff?text=Faithful+32x',
+        thumbnailUrl: 'https://picsum.photos/seed/faithful32x/200/133',
         downloadUrl: '/downloads/faithful-32x.zip',
         fileSize: 15728640, // 15 MB
         uploadDate: new Date('2024-01-15'),
@@ -28,6 +33,10 @@ export const mockResourcePacks: ResourcePack[] = [
         minecraftVersions: [
             mockMinecraftVersions[0],
             mockMinecraftVersions[1],
+            mockMinecraftVersions[5],
+            mockMinecraftVersions[6],
+            mockMinecraftVersions[7],
+            mockMinecraftVersions[2],
         ],
         supportedMods: [
             { id: 'm1', name: 'OptiFine', version: '1.20.1' },
@@ -42,7 +51,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'CIT resource pack with detailed textures for a more realistic Minecraft experience',
         author: 'Mizuno',
         tags: ['realistic', 'CIT', 'detailed'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/8d6e63/ffffff?text=Mizuno+16',
+        thumbnailUrl: 'https://picsum.photos/seed/mizuno16craft/200/133',
         downloadUrl: '/downloads/mizunos-16.zip',
         fileSize: 25165824, // 24 MB
         uploadDate: new Date('2024-02-10'),
@@ -51,6 +60,11 @@ export const mockResourcePacks: ResourcePack[] = [
             mockMinecraftVersions[0],
             mockMinecraftVersions[1],
             mockMinecraftVersions[2],
+            mockMinecraftVersions[3],
+            mockMinecraftVersions[4],
+            mockMinecraftVersions[5],
+            mockMinecraftVersions[6],
+            mockMinecraftVersions[7],
         ],
         supportedMods: [
             { id: 'm1', name: 'OptiFine', version: '1.20.1' },
@@ -68,7 +82,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Customize your Minecraft experience with subtle improvements and tweaks',
         author: 'Xisumavoid',
         tags: ['vanilla', 'quality-of-life', 'customizable'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/60ad5e/ffffff?text=Vanilla+Tweaks',
+        thumbnailUrl: 'https://picsum.photos/seed/vanillatweaks/200/133',
         downloadUrl: '/downloads/vanilla-tweaks.zip',
         fileSize: 5242880, // 5 MB
         uploadDate: new Date('2024-03-05'),
@@ -78,6 +92,10 @@ export const mockResourcePacks: ResourcePack[] = [
             mockMinecraftVersions[1],
             mockMinecraftVersions[2],
             mockMinecraftVersions[3],
+            mockMinecraftVersions[5],
+            mockMinecraftVersions[6],
+            mockMinecraftVersions[8],
+            mockMinecraftVersions[9],
         ],
         supportedMods: [],
         supportedModpacks: [],
@@ -90,7 +108,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Official resource pack for the Create mod with custom textures and models',
         author: 'simibubi',
         tags: ['mod-specific', 'create', 'mechanical'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/be9c91/ffffff?text=Create+Pack',
+        thumbnailUrl: 'https://picsum.photos/seed/createpack/200/133',
         downloadUrl: '/downloads/create-pack.zip',
         fileSize: 10485760, // 10 MB
         uploadDate: new Date('2024-04-12'),
@@ -114,7 +132,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Comic-style texture pack with vibrant colors and unique art style',
         author: 'Sphax',
         tags: ['comic', 'HD', 'colorful'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/ff6f00/ffffff?text=Sphax',
+        thumbnailUrl: 'https://picsum.photos/seed/sphaxpurebd/200/133',
         downloadUrl: '/downloads/sphax.zip',
         fileSize: 42991616, // 41 MB
         uploadDate: new Date('2024-01-20'),
@@ -131,7 +149,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Medieval-themed texture pack with rustic and aged look',
         author: 'JohnSmith',
         tags: ['medieval', 'rustic', 'classic'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/795548/ffffff?text=John+Smith',
+        thumbnailUrl: 'https://picsum.photos/seed/johnsmith/200/133',
         downloadUrl: '/downloads/johnsmith.zip',
         fileSize: 18874368, // 18 MB
         uploadDate: new Date('2024-02-14'),
@@ -148,7 +166,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'High definition pack with realistic water and improved particles',
         author: 'FlowsHD',
         tags: ['HD', 'realistic', 'water'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/2196f3/ffffff?text=Flows+HD',
+        thumbnailUrl: 'https://picsum.photos/seed/flowshd/200/133',
         downloadUrl: '/downloads/flows-hd.zip',
         fileSize: 31457280, // 30 MB
         uploadDate: new Date('2024-03-08'),
@@ -165,7 +183,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'RPG-style texture pack with fantasy elements',
         author: 'CoterieCraft Team',
         tags: ['RPG', 'fantasy', 'adventure'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/9c27b0/ffffff?text=Coterie',
+        thumbnailUrl: 'https://picsum.photos/seed/coteriecraft/200/133',
         downloadUrl: '/downloads/coterie.zip',
         fileSize: 22020096, // 21 MB
         uploadDate: new Date('2024-01-30'),
@@ -182,7 +200,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Minimalist texture pack that simplifies Minecraft visuals',
         author: 'RobotPantaloons',
         tags: ['minimalist', 'simple', 'performance'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/607d8b/ffffff?text=Bare+Bones',
+        thumbnailUrl: 'https://picsum.photos/seed/barebones/200/133',
         downloadUrl: '/downloads/barebones.zip',
         fileSize: 3145728, // 3 MB
         uploadDate: new Date('2024-04-05'),
@@ -199,7 +217,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Smooth and clean textures with a modern aesthetic',
         author: 'Soartex',
         tags: ['smooth', 'modern', 'clean'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/4caf50/ffffff?text=Soartex',
+        thumbnailUrl: 'https://picsum.photos/seed/soartex/200/133',
         downloadUrl: '/downloads/soartex.zip',
         fileSize: 16777216, // 16 MB
         uploadDate: new Date('2024-02-28'),
@@ -216,7 +234,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Dark and atmospheric pack perfect for adventure maps',
         author: 'Doku',
         tags: ['dark', 'atmospheric', 'adventure'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/37474f/ffffff?text=Dokucraft',
+        thumbnailUrl: 'https://picsum.photos/seed/dokucraft/200/133',
         downloadUrl: '/downloads/dokucraft.zip',
         fileSize: 20971520, // 20 MB
         uploadDate: new Date('2024-01-10'),
@@ -233,7 +251,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Vibrant and colorful pack with enhanced biomes',
         author: 'Umsoea',
         tags: ['colorful', 'biomes', 'vibrant'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/e91e63/ffffff?text=Umsoea',
+        thumbnailUrl: 'https://picsum.photos/seed/umsoea/200/133',
         downloadUrl: '/downloads/umsoea.zip',
         fileSize: 14680064, // 14 MB
         uploadDate: new Date('2024-03-22'),
@@ -250,7 +268,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Medieval building pack with thousands of new blocks',
         author: 'Conquest Team',
         tags: ['medieval', 'building', 'detailed'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/8d6e63/ffffff?text=Conquest',
+        thumbnailUrl: 'https://picsum.photos/seed/conquest/200/133',
         downloadUrl: '/downloads/conquest.zip',
         fileSize: 52428800, // 50 MB
         uploadDate: new Date('2024-02-05'),
@@ -267,7 +285,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Adds smooth animations to mobs and players',
         author: 'FreshLX',
         tags: ['animations', 'mobs', 'smooth'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/ff9800/ffffff?text=Fresh+Anim',
+        thumbnailUrl: 'https://picsum.photos/seed/freshanim/200/133',
         downloadUrl: '/downloads/fresh-animations.zip',
         fileSize: 8388608, // 8 MB
         uploadDate: new Date('2024-04-18'),
@@ -284,7 +302,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Makes leaves bushy and full without performance impact',
         author: 'XLuma',
         tags: ['leaves', 'nature', 'add-on'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/4caf50/ffffff?text=Better+Leaves',
+        thumbnailUrl: 'https://picsum.photos/seed/betterleaves/200/133',
         downloadUrl: '/downloads/better-leaves.zip',
         fileSize: 2097152, // 2 MB
         uploadDate: new Date('2024-03-15'),
@@ -301,7 +319,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Beautiful sky textures with dynamic clouds',
         author: 'DragonGaming',
         tags: ['sky', 'clouds', 'atmospheric'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/03a9f4/ffffff?text=Dramatic+Skys',
+        thumbnailUrl: 'https://picsum.photos/seed/dramaticskys/200/133',
         downloadUrl: '/downloads/dramatic-skys.zip',
         fileSize: 6291456, // 6 MB
         uploadDate: new Date('2024-01-25'),
@@ -318,7 +336,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Shader-like effects without requiring actual shaders',
         author: 'EminGT',
         tags: ['shaders', 'lighting', 'effects'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/ffc107/ffffff?text=Complementary',
+        thumbnailUrl: 'https://picsum.photos/seed/complementary/200/133',
         downloadUrl: '/downloads/complementary.zip',
         fileSize: 12582912, // 12 MB
         uploadDate: new Date('2024-04-01'),
@@ -335,7 +353,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Cute and colorful cartoon-style textures',
         author: 'Jolicraft',
         tags: ['cartoon', 'cute', 'colorful'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/e91e63/ffffff?text=Jolicraft',
+        thumbnailUrl: 'https://picsum.photos/seed/jolicraft/200/133',
         downloadUrl: '/downloads/jolicraft.zip',
         fileSize: 17825792, // 17 MB
         uploadDate: new Date('2024-02-20'),
@@ -352,7 +370,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Quadruple resolution faithful textures',
         author: 'Compliance Team',
         tags: ['faithful', 'HD', 'high-res'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/2e7d32/ffffff?text=Compliance+64x',
+        thumbnailUrl: 'https://picsum.photos/seed/compliance64x/200/133',
         downloadUrl: '/downloads/compliance-64x.zip',
         fileSize: 36700160, // 35 MB
         uploadDate: new Date('2024-03-12'),
@@ -369,7 +387,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Vibrant RPG pack with custom models',
         author: 'Chromahills',
         tags: ['RPG', 'models', 'vibrant'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/9c27b0/ffffff?text=Chromahills',
+        thumbnailUrl: 'https://picsum.photos/seed/chromahills/200/133',
         downloadUrl: '/downloads/chromahills.zip',
         fileSize: 28311552, // 27 MB
         uploadDate: new Date('2024-01-18'),
@@ -386,7 +404,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Smooth semi-realistic textures with soft colors',
         author: 'Sapix',
         tags: ['smooth', 'realistic', 'soft'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/795548/ffffff?text=Sapixcraft',
+        thumbnailUrl: 'https://picsum.photos/seed/sapixcraft/200/133',
         downloadUrl: '/downloads/sapixcraft.zip',
         fileSize: 19922944, // 19 MB
         uploadDate: new Date('2024-04-10'),
@@ -403,7 +421,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Modern minimalist pack with clean lines',
         author: 'Xeno',
         tags: ['modern', 'minimalist', 'clean'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/607d8b/ffffff?text=Xenocontendi',
+        thumbnailUrl: 'https://picsum.photos/seed/xenocontendi/200/133',
         downloadUrl: '/downloads/xenocontendi.zip',
         fileSize: 13631488, // 13 MB
         uploadDate: new Date('2024-02-16'),
@@ -420,7 +438,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Subtle improvements to vanilla textures',
         author: 'HaloWolf',
         tags: ['vanilla', 'tweaks', 'subtle'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/60ad5e/ffffff?text=Halo+Tweaks',
+        thumbnailUrl: 'https://picsum.photos/seed/halotweaks/200/133',
         downloadUrl: '/downloads/halos-tweaks.zip',
         fileSize: 7340032, // 7 MB
         uploadDate: new Date('2024-03-28'),
@@ -437,7 +455,7 @@ export const mockResourcePacks: ResourcePack[] = [
         description: 'Quality of life texture improvements',
         author: 'NateJeff',
         tags: ['quality-of-life', 'improvements', 'vanilla'],
-        thumbnailUrl: 'https://via.placeholder.com/300x200/ff6f00/ffffff?text=Nate+Tweaks',
+        thumbnailUrl: 'https://picsum.photos/seed/natestweaks/200/133',
         downloadUrl: '/downloads/nates-tweaks.zip',
         fileSize: 5767168, // 5.5 MB
         uploadDate: new Date('2024-04-22'),

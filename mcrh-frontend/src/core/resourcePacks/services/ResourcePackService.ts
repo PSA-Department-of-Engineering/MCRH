@@ -73,12 +73,12 @@ export class ResourcePackService {
                 if (!matchesSearch) return false;
             }
 
-            // Minecraft version filter
+            // Minecraft version filter - AND logic (pack must have ALL selected versions)
             if (filters.minecraftVersionIds && filters.minecraftVersionIds.length > 0) {
-                const hasMatchingVersion = pack.minecraftVersions.some(version =>
-                    filters.minecraftVersionIds!.includes(version.id)
+                const hasAllVersions = filters.minecraftVersionIds.every(versionId =>
+                    pack.minecraftVersions.some(version => version.id === versionId)
                 );
-                if (!hasMatchingVersion) return false;
+                if (!hasAllVersions) return false;
             }
 
             // Mod filter

@@ -8,6 +8,20 @@ import type { ResourcePack } from '../core/resourcePacks/models/ResourcePack';
  * Single Responsibility: Layout and display a grid of resource pack cards
  * Handles responsive layout, empty states, and infinite scrolling
  * 
+ * Responsive layout strategy:
+ * - Uses CSS Grid auto-fit with minmax for optimal card sizing
+ * - Cards maintain minimum 220px width (narrow, portrait-oriented)
+ * - Automatically fits as many cards as possible per row
+ * - Gap spacing between cards: 24px → 32px → 40px → 48px
+ * - Large page margins (3x) for breathing room from edges
+ * - Mobile uses single column for better UX
+ * 
+ * Benefits:
+ * - Narrow cards create elegant portrait layout
+ * - More cards fit per row on wider screens
+ * - Generous page margins frame the content nicely
+ * - No manual breakpoints needed - CSS handles it automatically
+ * 
  * @param packs - Array of resource packs to display
  * @param loading - Whether the initial grid is in loading state
  * @param loadingMore - Whether more packs are being loaded
@@ -72,13 +86,12 @@ export const PackGrid = ({
             <Box
                 sx={{
                     display: 'grid',
+                    // Auto-fit cards with minimum 220px width - much narrower, portrait-oriented cards
                     gridTemplateColumns: {
-                        xs: '1fr',
-                        sm: 'repeat(2, 1fr)',
-                        md: 'repeat(3, 1fr)',
-                        lg: 'repeat(4, 1fr)',
+                        xs: '1fr',  // Mobile: always 1 column for better UX
+                        sm: 'repeat(auto-fit, minmax(220px, 1fr))',  // Tablet+: narrow cards, more per row
                     },
-                    gap: 3,
+                    gap: { xs: 3, sm: 4, md: 5, lg: 6 },  // Same gap between cards: 24px → 32px → 40px → 48px
                 }}
             >
                 {packs.map((pack) => (
