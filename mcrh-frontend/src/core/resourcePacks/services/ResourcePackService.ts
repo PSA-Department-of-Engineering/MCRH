@@ -57,7 +57,7 @@ export class ResourcePackService {
      * @param filters - Filter criteria
      * @returns Filtered array of resource packs
      */
-    private static applyFilters(
+    static applyFilters(
         packs: ResourcePack[],
         filters: ResourcePackFilters
     ): ResourcePack[] {
@@ -115,7 +115,7 @@ export class ResourcePackService {
      * @param sort - Sort configuration
      * @returns Sorted array of resource packs
      */
-    private static applySorting(
+    static applySorting(
         packs: ResourcePack[],
         sort: ResourcePackSort
     ): ResourcePack[] {

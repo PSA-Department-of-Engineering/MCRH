@@ -21,7 +21,7 @@ import type { SortOption } from '../core/resourcePacks/models/ResourcePack';
  */
 
 export const HomePage = () => {
-    const minecraftVersions = useMinecraftVersions();
+    const { versions: minecraftVersions } = useMinecraftVersions();
     const { packs, filters, sort, loading, updateFilters, updateSort } = useResourcePacks();
     const [view, setView] = useState<ViewMode>('grid');
 
